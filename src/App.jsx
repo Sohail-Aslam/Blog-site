@@ -1,25 +1,22 @@
+
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Read from './component/read.jsx';
-import Write from './component/write.jsx';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import './App.css';
 import Nav from "./nav.jsx";
 
-import './App.css';
+import Write from './component/write';
+import Read from './component/read';
 
-function Blog() {
-  const [count, setCount] = useState(0);
+export default function App() {
+    
 
-  return (
-    <div>
-      <BrowserRouter>
-        <Nav />
-        <Routes>
-          <Route path="/read" element={<Read />} />
-          <Route path="/write" element={<Write />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+    return (
+        <BrowserRouter>
+           <Nav/>
+            <Routes>
+                <Route path="/write" element={<Write />} />
+                <Route path="/read" element={<Read />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
-
-export default Blog;
