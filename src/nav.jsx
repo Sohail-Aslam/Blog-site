@@ -1,60 +1,43 @@
-
-import { useRef, useState } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-
+import { useLocation, Link } from 'react-router-dom';
 import './App.css';
 
 export default function Nav() {
-    const editorRef = useRef(null);
+    const location = useLocation(); // Use the useLocation hook to get current location
 
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent());
-        }
+    const getActiveTab = () => {
+        if (location.pathname === '/write') return 'write';
+        if (location.pathname === '/read') return 'read';
+        return 'write'; // Default tab
     };
-    const [activeTab, setActiveTab] = useState('write'); 
 
-    const handleTabClick = (tab) => {
-        setActiveTab(tab);
-    }
-   
+    const activeTab = getActiveTab();
 
     return (
-        <>
-             <div className="menu">
-             <div className={`tab-container ${activeTab === 'write' ? 'active' : ''}`}>
-          <p className="tab-text">
-          Write
-          </p>
-          <Link to="/write" onClick={() => handleTabClick('write')}> <img 
-            className='tab-img' 
-            src="/tabs.png" 
-            height='50px' 
-            width='205px' 
-            alt="Write tab" 
-            onClick={() => handleTabClick('write')} 
-          /></Link>
-         
+        <div id='menu' className="menu">
+            <div className={`tab-container ${activeTab === 'write' ? 'active' : ''}`}>
+                <Link className='tab-link' to="/write">
+                    <p className="tab-text">Write</p>
+                    <img 
+                        className='tab-img' 
+                        src="/tabs.png" 
+                        height='50px' 
+                        width='205px' 
+                        alt="Write tab" 
+                    />
+                </Link>
+            </div>
+            <div className={`tab-container ${activeTab === 'read' ? 'active' : ''}`}>
+                <Link className='tab-link' to="/read">
+                    <p className="tab-text">Read</p>
+                    <img 
+                        className='tab-img' 
+                        src="/tabs.png" 
+                        height='50px' 
+                        width='205px' 
+                        alt="Read tab" 
+                    />
+                </Link>
+            </div>
         </div>
-        <div className={`tab-container ${activeTab === 'read' ? 'active' : ''}`}>
-          <p className="tab-text">
-           View
-          </p>
-          <Link to="/read" onClick={() => handleTabClick('read')}> <img 
-            className='tab-img' 
-            src="/tabs.png" 
-            height='50px' 
-            width='205px' 
-            alt="View tab" 
-            onClick={() => handleTabClick('read')} 
-            
-          /></Link>
-         
-        </div>
-      </div>
-
-            
-        </>
     );
 }
-

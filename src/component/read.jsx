@@ -1,12 +1,39 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import Aos from 'aos';
 import 'aos/dist/aos.css';
 
-export default function Read({ blogs = [] }) {
+export default function Read() {
+
+  const [blogs, setBlogs] = useState([]);
+  const [selectedBlogIndex, setSelectedBlogIndex] = useState(null); // To track which blog to show in the popup
+  const [isPopupVisible, setPopupVisible] = useState(false);
+
+  // Load blogs from localStorage on component mount
   useEffect(() => {
-    Aos.init();
+    const storedBlogs = JSON.parse(localStorage.getItem('blogs')) || [];
+    setBlogs(storedBlogs);
   }, []);
+
+  const handleDelete = (index) => {
+    // Filter out the blog at the specific index
+    const updatedBlogs = blogs.filter((_, i) => i !== index);
+
+    // Update the state with the new array
+    setBlogs(updatedBlogs);
+
+    // Update the localStorage with the new array
+    localStorage.setItem('blogs', JSON.stringify(updatedBlogs));
+  };
+
+  const handlePopup = (index) => {
+    setSelectedBlogIndex(index); // Set the selected blog index
+    setPopupVisible(true); // Show the popup
+  };
+
+  const closePopup = () => {
+    setPopupVisible(false); // Hide the popup
+  };
+
 
   const canvasRef = useRef(null);
 
@@ -104,21 +131,52 @@ export default function Read({ blogs = [] }) {
   }, []);
 
   return (
-    <div style={{ position: '' }}>
+    <div>
       <canvas
         ref={canvasRef}
         style={{ overflow: 'hidden', width: '100vw', height: '100vh' }}
       />
+  
+
+
+      {isPopupVisible && selectedBlogIndex !== null && (
+        <div className="popup" style={{ display: 'block', zIndex: '5', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',   background: '#cdffcd'
+          , padding: '20px', borderRadius: '25px', height: '90%', overflow: 'auto', width: '80%' }}>
+          <div style={{ padding: '10px' }}>
+            <h2>{blogs[selectedBlogIndex].heading}</h2>
+            <div style={{}} dangerouslySetInnerHTML={{ __html: blogs[selectedBlogIndex].content }} />
+            <button className='button' onClick={() => handleDelete(selectedBlogIndex)}>Delete</button>
+            <button className='button' onClick={closePopup}>Close</button>
+          </div>
+        </div>
+      )}
+
+
       <div className="card-container">
-        <div className="blog-cards">
-          {blogs.map((blog, index) => (
-            <div key={index} className="blog-card">
-              <h3>{blog.heading}</h3>
-              <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-            </div>
-          ))}
+        <div className='title'><h1>Blog Cards</h1></div>
+        <div className='container'>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+            {blogs.map((blog, index) => (
+
+              <div
+                
+                style={{
+                  padding: '10px',
+                  flex: ' calc(33.33% - 20px)',
+                  boxSizing: 'border-box', background: 'white', borderRadius: '25px'
+                }}>
+                <h2 style={{ height: 'auto' }}>{blog.heading}</h2>
+                <div style={{ height: '400px', overflow: 'auto' }} dangerouslySetInnerHTML={{ __html: blog.content }} />
+                <button className='button' onClick={() => handleDelete(index)}>Delete</button>
+                <button onClick={() => handlePopup(index)} key={index} className="button">Read</button>
+
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
     </div>
+
   );
 }

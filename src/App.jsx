@@ -15,6 +15,7 @@ export default function App() {
            <Nav/>
             <Routes>
                 <Route path="/write" element={<Write />} />
+                <Route path="/" element={<Write />} />
                 <Route path="/read" element={<Read />} />
             </Routes>
         </BrowserRouter>
